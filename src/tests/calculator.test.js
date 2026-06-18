@@ -1,16 +1,20 @@
 /**
  * Unit tests for calculator.js
  *
- * Covers all four basic arithmetic operations:
+ * Covers all arithmetic operations:
  *   - addition       (+)
  *   - subtraction    (-)
  *   - multiplication (*)
  *   - division       (/)
+ *   - modulo         (%)
+ *   - exponentiation (^)
+ *   - square root    (squareRoot)
  *
- * Also tests edge cases such as division by zero and invalid operators.
+ * Also tests edge cases such as division/modulo by zero, square root of
+ * negative numbers, and invalid operators.
  */
 
-const { calculate } = require("../calculator");
+const { calculate, modulo, power, squareRoot } = require("../calculator");
 
 // ---------------------------------------------------------------------------
 // Addition (+)
@@ -137,10 +141,113 @@ describe("Edge cases", () => {
   });
 
   test("unsupported operator throws an error", () => {
-    expect(() => calculate(5, "%", 3)).toThrow(/Unsupported operator/);
+    expect(() => calculate(5, "?", 3)).toThrow(/Unsupported operator/);
   });
 
   test("empty string operator throws an error", () => {
     expect(() => calculate(5, "", 3)).toThrow(/Unsupported operator/);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Modulo (%) — image example: 5 % 2
+// ---------------------------------------------------------------------------
+describe("Modulo (%)", () => {
+  test("5 % 2 = 1 (from image example)", () => {
+    expect(modulo(5, 2)).toBe(1);
+  });
+
+  test("via calculate: 5 % 2 = 1", () => {
+    expect(calculate(5, "%", 2)).toBe(1);
+  });
+
+  test("10 % 3 = 1", () => {
+    expect(modulo(10, 3)).toBe(1);
+  });
+
+  test("even number: 8 % 4 = 0", () => {
+    expect(modulo(8, 4)).toBe(0);
+  });
+
+  test("negative dividend: -7 % 3 = -1", () => {
+    expect(modulo(-7, 3)).toBe(-1);
+  });
+
+  test("modulo by zero throws an error", () => {
+    expect(() => modulo(5, 0)).toThrow("Modulo by zero is not allowed");
+  });
+
+  test("via calculate: modulo by zero throws an error", () => {
+    expect(() => calculate(5, "%", 0)).toThrow("Modulo by zero is not allowed");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Exponentiation (^) — image example: 2 ^ 3
+// ---------------------------------------------------------------------------
+describe("Exponentiation (^)", () => {
+  test("2 ^ 3 = 8 (from image example)", () => {
+    expect(power(2, 3)).toBe(8);
+  });
+
+  test("via calculate: 2 ^ 3 = 8", () => {
+    expect(calculate(2, "^", 3)).toBe(8);
+  });
+
+  test("2 ^ 8 = 256", () => {
+    expect(power(2, 8)).toBe(256);
+  });
+
+  test("any number to the power of 0 = 1", () => {
+    expect(power(99, 0)).toBe(1);
+  });
+
+  test("any number to the power of 1 = itself", () => {
+    expect(power(7, 1)).toBe(7);
+  });
+
+  test("negative exponent: 2 ^ -1 = 0.5", () => {
+    expect(power(2, -1)).toBe(0.5);
+  });
+
+  test("fractional exponent: 4 ^ 0.5 = 2", () => {
+    expect(power(4, 0.5)).toBe(2);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Square root (squareRoot) — image example: √16
+// ---------------------------------------------------------------------------
+describe("Square root (squareRoot)", () => {
+  test("√16 = 4 (from image example)", () => {
+    expect(squareRoot(16)).toBe(4);
+  });
+
+  test("√9 = 3", () => {
+    expect(squareRoot(9)).toBe(3);
+  });
+
+  test("√0 = 0", () => {
+    expect(squareRoot(0)).toBe(0);
+  });
+
+  test("√1 = 1", () => {
+    expect(squareRoot(1)).toBe(1);
+  });
+
+  test("√2 is approximately 1.414", () => {
+    expect(squareRoot(2)).toBeCloseTo(1.414, 3);
+  });
+
+  test("√25 = 5", () => {
+    expect(squareRoot(25)).toBe(5);
+  });
+
+  test("square root of a negative number throws an error", () => {
+    expect(() => squareRoot(-1)).toThrow("Square root of a negative number is not allowed");
+  });
+
+  test("square root of -100 throws an error", () => {
+    expect(() => squareRoot(-100)).toThrow("Square root of a negative number is not allowed");
   });
 });
